@@ -1,6 +1,6 @@
 # blueNoise
 
-## "*In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.*" - Wikipedia
+## *In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.* - Wikipedia
 </br>
 
 ### Crude comparison between different implementations:
@@ -9,7 +9,6 @@
 - RAM: 64GB
 - compiler: VS 2017
 - optimization: `/Ox`
-- Bridson's k parameter: 30
 
 Implementation | k | points | ms
 --- | --- | --- | ---

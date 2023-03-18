@@ -68,8 +68,8 @@ private:
 
 template<typename T>
 void _remove_at(std::vector<T>& vec, typename std::vector<T>::size_type pos) {
-	vec[pos] = std::move_if_noexcept((vec.back()));
-	vec.pop_back();
+    vec[pos] = std::move_if_noexcept((vec.back()));
+    vec.pop_back();
 }
 
 template<typename point2d_t, typename rn_engine_t>
@@ -108,7 +108,7 @@ bool _is_valid_candidate(const point2d_t& point, const _grid_t<point2d_t>& grid,
  */
 template<typename point2d_t, typename rn_engine_t>
 std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_t min_dist, int_t k_max_candidates, rn_engine_t& rne) {
-	const float_t cell_size = min_dist / std::numbers::sqrt2_v<float_t>;
+    const float_t cell_size = min_dist / std::numbers::sqrt2_v<float_t>;
 
     _grid_t<point2d_t> grid(width, height, cell_size);
 
@@ -117,14 +117,14 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
     points_t generated;
     generated.reserve(grid.w * grid.h);
 
-	std::uniform_real_distribution<float_t> rng;
+    std::uniform_real_distribution<float_t> rng;
     point2d_t first(rng(rne) * (width - 1), rng(rne) * (height - 1));
     
     grid.add_point(first);
-	active.push_back(first);
+    active.push_back(first);
     generated.push_back(first);
 
-	int steps = 0;
+    int steps = 0;
     const auto start = std::chrono::steady_clock::now();
     while (!active.empty()) {
         ++steps;
@@ -133,10 +133,10 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
         typename points_t::size_type random_idx = idx_rng(rne);
         point2d_t point = active[random_idx];
 
-		bool found = false;
+        bool found = false;
         for (int_t i = 0; i < k_max_candidates; ++i) {
-			point2d_t candidate = _generate_random_point_around(point, min_dist, rne);
-			if (!_is_valid_candidate(candidate, grid, min_dist))
+            point2d_t candidate = _generate_random_point_around(point, min_dist, rne);
+            if (!_is_valid_candidate(candidate, grid, min_dist))
                 continue;
 
             grid.add_point(candidate);
@@ -145,18 +145,18 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
 
             found = true;
             break;
-		}
+        }
 
         if (!found) {
             _remove_at(active, random_idx);
         }
-	}
+    }
     const auto end = std::chrono::steady_clock::now();
     
     std::cout << "converged in " << steps << " steps" << std::endl;
     std::cout << "generated " << generated.size() << " points in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
 
-	return generated;
+    return generated;
 }
 
 }
