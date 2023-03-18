@@ -6,9 +6,6 @@
 #include <random>
 #include <cmath>
 
-#include <iostream>
-#include <chrono>
-
 namespace blue_noise {
 
 typedef uint16_t int_t;
@@ -124,11 +121,7 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
     active.push_back(first);
     generated.push_back(first);
 
-    int steps = 0;
-    const auto start = std::chrono::steady_clock::now();
     while (!active.empty()) {
-        ++steps;
-
         std::uniform_int_distribution<typename points_t::size_type> idx_rng(0, active.size() - 1);
         typename points_t::size_type random_idx = idx_rng(rne);
         point2d_t point = active[random_idx];
@@ -151,14 +144,10 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
             _remove_at(active, random_idx);
         }
     }
-    const auto end = std::chrono::steady_clock::now();
-    
-    std::cout << "converged in " << steps << " steps" << std::endl;
-    std::cout << "generated " << generated.size() << " points in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
 
     return generated;
-}
+} // pds_Bridson_sampling_2d
 
-}
+} // blue_noise
 
 #endif
