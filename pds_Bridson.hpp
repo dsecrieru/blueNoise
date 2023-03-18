@@ -18,7 +18,7 @@ template<typename point2d_t>
 class _grid_t {
 public:
     typedef std::vector<point2d_t> points_t;
-    typedef points_t::size_type size_type;
+    typedef typename points_t::size_type size_type;
 
     size_type w, h;
     int_t orig_w, orig_h;
