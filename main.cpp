@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "pds_Bridson.hpp"
 
 template<typename T>
@@ -15,8 +17,10 @@ int main(int argc, char* argv[]) {
             100, 100,
             10,
             30,
-            rne
+            rne,
+            nullptr
     );
+    std::cout << "generated: " << bridsonSamples.size() << std::endl;
 
 	return 0;
 }

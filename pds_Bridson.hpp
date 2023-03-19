@@ -3,13 +3,16 @@
 
 #include <numbers>
 #include <vector>
+#include <optional>
 #include <random>
 #include <cmath>
+#include <functional>
 
 namespace blue_noise {
 
-typedef uint16_t int_t;
+typedef uint32_t integral_t;
 typedef float float_t;
+typedef std::function<float_t(float_t)> radius_func_t;
 
 template<typename point2d_t>
 class _grid_t {
@@ -18,11 +21,11 @@ public:
     typedef typename points_t::size_type size_type;
 
     size_type w, h;
-    int_t orig_w, orig_h;
+    integral_t orig_w, orig_h;
 
 public:
     _grid_t() = delete;
-    _grid_t(int_t width, int_t height, float_t cell_size) : orig_w(width), orig_h(height), _cell_size(cell_size) {
+    _grid_t(integral_t width, integral_t height, float_t cell_size) : orig_w(width), orig_h(height), _cell_size(cell_size) {
         w = std::lround(float_t(orig_w) / _cell_size);
         h = std::lround(float_t(orig_h) / _cell_size);
         
@@ -42,18 +45,17 @@ public:
     }
 
     void add_point(const point2d_t& point) {
-        auto coord = cell_coord(point);
+        coord_t coord = cell_coord(point);
         _points[coord.y * w + coord.x] = point;
         _has_point[coord.y * w + coord.x] = true;
     }
 
-    bool has_point_at(size_type grid_x, size_type grid_y) const {
-        return _has_point[grid_y * w + grid_x];
-    }
+    std::optional<float_t> distance(size_type grid_x, size_type grid_y, const point2d_t& point) const {
+        if (!_has_point[grid_y * w + grid_x])
+            return std::nullopt;
 
-    float_t distance(size_type grid_x, size_type grid_y, const point2d_t& point) const {
-        auto dx = point.x - _points[grid_y * w + grid_x].x;
-        auto dy = point.y - _points[grid_y * w + grid_x].y;
+        float_t dx = point.x - _points[grid_y * w + grid_x].x;
+        float_t dy = point.y - _points[grid_y * w + grid_x].y;
         return std::sqrt(dx * dx + dy * dy);
     }
 
@@ -70,11 +72,13 @@ void _remove_at(std::vector<T>& vec, typename std::vector<T>::size_type pos) {
 }
 
 template<typename point2d_t, typename rn_engine_t>
-point2d_t _generate_random_point_around(const point2d_t& point, float_t min_dist, rn_engine_t& rne) {
+    requires std::uniform_random_bit_generator<rn_engine_t>
+point2d_t _generate_random_point_around(const point2d_t& point, float_t min_dist,
+                                        rn_engine_t& rne, const radius_func_t& radius_func) {
     std::uniform_real_distribution<float_t> rng;
 
-    auto radius = min_dist * (rng(rne) + 1.0f);
-    auto angle_radians = 2.0f * std::numbers::pi_v<float_t> * rng(rne);
+    float_t radius = radius_func(min_dist);
+    float_t angle_radians = 2.0f * std::numbers::pi_v<float_t> * rng(rne);
 
     return point2d_t(point.x + radius * std::cos(angle_radians), point.y + radius * sin(angle_radians));
 }
@@ -86,14 +90,16 @@ bool _is_valid_candidate(const point2d_t& point, const _grid_t<point2d_t>& grid,
 
     auto grid_coord = grid.cell_coord(point);
 
-    auto start_x = grid_coord.x >= 2 ? grid_coord.x - 2 : 0;
-    auto end_x = grid_coord.x <= grid.w - 3 ? grid_coord.x + 2 : grid.w - 1;
-    auto start_y = grid_coord.y >= 2 ? grid_coord.y - 2 : 0;
-    auto end_y = grid_coord.y <= grid.h - 3 ? grid_coord.y + 2 : grid.h - 1;
+    typedef typename _grid_t<point2d_t>::size_type size_type;
+    size_type start_x = grid_coord.x >= 2 ? grid_coord.x - 2 : 0;
+    size_type end_x = grid_coord.x <= grid.w - 3 ? grid_coord.x + 2 : grid.w - 1;
+    size_type start_y = grid_coord.y >= 2 ? grid_coord.y - 2 : 0;
+    size_type end_y = grid_coord.y <= grid.h - 3 ? grid_coord.y + 2 : grid.h - 1;
 
-    for (int i = start_x; i <= end_x; ++i)
-        for (int j = start_y; j <= end_y; ++j) {
-            if (grid.has_point_at(i, j) && grid.distance(i, j, point) < min_dist - FLT_EPSILON)
+    for (size_type i = start_x; i <= end_x; ++i)
+        for (size_type j = start_y; j <= end_y; ++j) {
+            std::optional<float_t> dist = grid.distance(i, j, point);
+            if (dist.has_value() && dist.value() < min_dist - FLT_EPSILON)
                 return false;
         }
 
@@ -101,10 +107,23 @@ bool _is_valid_candidate(const point2d_t& point, const _grid_t<point2d_t>& grid,
 }
 
 /*
+ * Implementation of Robert Bridson's Fast Poisson Disk Sampling for the 2-dimensional case.
+ *
+ * More details in the original paper:
+ *     https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
  *
  */
 template<typename point2d_t, typename rn_engine_t>
-std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_t min_dist, int_t k_max_candidates, rn_engine_t& rne) {
+    requires std::uniform_random_bit_generator<rn_engine_t>
+std::vector<point2d_t> pds_Bridson_sampling_2d(integral_t width, integral_t height, float_t min_dist, integral_t k_max_candidates,
+                                               rn_engine_t& rne,
+                                               radius_func_t radius_func = nullptr) {
+    if (!radius_func)
+        radius_func = [&rne](float_t min_dist) {
+            std::uniform_real_distribution<float_t> rng;
+            return min_dist * (rng(rne) + 1.0f);
+        };
+
     const float_t cell_size = min_dist / std::numbers::sqrt2_v<float_t>;
 
     _grid_t<point2d_t> grid(width, height, cell_size);
@@ -124,11 +143,11 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(int_t width, int_t height, float_
     while (!active.empty()) {
         std::uniform_int_distribution<typename points_t::size_type> idx_rng(0, active.size() - 1);
         typename points_t::size_type random_idx = idx_rng(rne);
-        point2d_t point = active[random_idx];
+        const point2d_t& point = active[random_idx];
 
         bool found = false;
-        for (int_t i = 0; i < k_max_candidates; ++i) {
-            point2d_t candidate = _generate_random_point_around(point, min_dist, rne);
+        for (integral_t i = 0; i < k_max_candidates; ++i) {
+            point2d_t candidate = _generate_random_point_around(point, min_dist, rne, radius_func);
             if (!_is_valid_candidate(candidate, grid, min_dist))
                 continue;
 
