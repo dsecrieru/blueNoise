@@ -14,14 +14,16 @@ More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson
 - optimization: `/Ox`
 - 10 samples
 
-Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ implementation, k=30
+Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ implementation; k=30
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | ~55
-dsecrieru/blueNoise, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9870 | ~32
+dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9870 | ~32
 
-Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.1, results from author
-Implementation | points | ms
---- | --- | ---
-kchapelier/fast-2d-poisson-disk-sampling, JavaScript, 800x800 minDist 4.00 maxDistance 8.00 tries 30 | ~25335 | 118.758
-dsecrieru/blueNoise (vanilla Bridson w. mt19937), 800x800 minDist 4.00, maxDist 8.00, tries 30 | 25125 | 83
+Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.1, results from author; 800x800, k=30
+Implementation | minDist | maxDistance | points | ms
+--- | --- | --- | --- | ---
+kchapelier | 6.96 | 13.93 | ~8377 | 39.890ms
+dsecrieru, vanilla Bridson w. mt19937 | 6.96 | 13.93 | ~8315 | 27
+kchapelier | 8.00 | 16.00 | ~6373 | 30.538ms
+dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6327 | 20
