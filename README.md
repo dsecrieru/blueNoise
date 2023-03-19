@@ -1,7 +1,10 @@
 # blueNoise
 
-## *In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.* - Wikipedia
+*In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.* - Wikipedia
 </br>
+
+A small, header-only, implementation of Robert Bridson's *Fast Poisson Disk Sampling* for the 2-dimensional case.
+More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
 
 ### Crude comparison between different implementations:
 - arch: amd64
