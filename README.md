@@ -17,8 +17,8 @@ More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson
 Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ implementation; k=30:
 Implementation | points | ms
 --- | --- | ---
-corporateshark, all defaults | ~9826 | ~55
-dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9862 | ~29
+corporateshark, all defaults | ~9826 | 55
+dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9862 | 29
 
 Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.1, results from author; 800x800, k=30:
 Implementation | minDist | maxDistance | points | ms
