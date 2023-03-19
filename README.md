@@ -18,12 +18,12 @@ Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ impl
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | ~55
-dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9870 | ~29
+dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9862 | ~29
 
 Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.1, results from author; 800x800, k=30:
 Implementation | minDist | maxDistance | points | ms
 --- | --- | --- | --- | ---
 kchapelier | 6.96 | 13.93 | ~8377 | 39.890ms
-dsecrieru, vanilla Bridson w. mt19937 | 6.96 | 13.93 | ~8315 | 24
+dsecrieru, vanilla Bridson w. mt19937 | 6.96 | 13.93 | ~8337 | 25
 kchapelier | 8.00 | 16.00 | ~6373 | 30.538ms
-dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6327 | 18
+dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6319 | 18
