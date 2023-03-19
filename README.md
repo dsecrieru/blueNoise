@@ -26,4 +26,4 @@ Implementation | minDist | maxDistance | points | ms
 kchapelier | 6.96 | 13.93 | ~8377 | 39.890ms
 dsecrieru, vanilla Bridson w. mt19937 | 6.96 | 13.93 | ~8337 | 25
 kchapelier | 8.00 | 16.00 | ~6373 | 30.538ms
-dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6319 | 18
+dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6319 | 19
