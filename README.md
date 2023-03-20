@@ -11,7 +11,7 @@ More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson
 - CPU: AMD Ryzen 9 5900X
 - RAM: 64GB
 - compiler: VS 2017, compiler version `19.35.32215`
-- optimization: `/Ox`
+- compiler options:  `/Ox /std:c++20`
 - 10 samples
 
 Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ implementation; k=30:
