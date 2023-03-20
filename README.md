@@ -10,7 +10,7 @@ More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson
 - arch: amd64
 - CPU: AMD Ryzen 9 5900X
 - RAM: 64GB
-- compiler: VS 2017
+- compiler: VS 2017, compiler version `19.35.32215`
 - optimization: `/Ox`
 - 10 samples
 
@@ -18,12 +18,10 @@ Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ impl
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | 55
-dsecrieru, vanilla Bridson w. mt19937, 1600x900, minDist=9.6 | ~9862 | 29
+dsecrieru, vanilla Bridson w. mt19937 RNG, 1600x900, minDist=9.6 | ~9862 | 29
 
-Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.1, results from author; 800x800, k=30:
+Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.3, 1600x900, k=30:
 Implementation | minDist | maxDistance | points | ms
 --- | --- | --- | --- | ---
-kchapelier | 6.96 | 13.93 | ~8377 | 39.890ms
-dsecrieru, vanilla Bridson w. mt19937 | 6.96 | 13.93 | ~8337 | 25
-kchapelier | 8.00 | 16.00 | ~6373 | 30.538ms
-dsecrieru, vanilla Bridson w. mt19937 | 8.00 | 16.00 | ~6319 | 19
+kchapelier | 8.00 | 16.00 | ~14313 | 62.723
+dsecrieru, vanilla Bridson w. mt19937 RNG | 8.00 | 16.00 | ~14181 | 43
