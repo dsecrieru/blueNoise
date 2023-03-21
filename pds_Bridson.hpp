@@ -111,7 +111,7 @@ namespace _internal {
         return true;
     }
 
-} // namespace internal
+} // namespace _internal
 
 /*
  * Implementation of Robert Bridson's Fast Poisson Disk Sampling for the 2-dimensional case.
