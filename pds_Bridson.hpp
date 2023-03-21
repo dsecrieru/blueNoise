@@ -12,7 +12,6 @@ namespace blue_noise {
 
 typedef uint32_t integral_t;
 typedef float float_t;
-typedef std::function<float_t(float_t)> radius_func_t;
 
 template<typename point2d_t>
 class _grid_t {
@@ -83,11 +82,10 @@ void _remove_at(std::vector<T>& vec, typename std::vector<T>::size_type pos) {
 
 template<typename point2d_t, typename rn_engine_t>
     requires std::uniform_random_bit_generator<rn_engine_t>
-point2d_t _generate_random_point_around(const point2d_t& point, float_t min_dist,
-                                        rn_engine_t& rne, const radius_func_t& radius_func) {
+point2d_t _generate_random_point_around(const point2d_t& point, float_t min_dist, rn_engine_t& rne) {
     std::uniform_real_distribution<float_t> rng;
 
-    float_t radius = radius_func(min_dist);
+    float_t radius = min_dist * (rng(rne) + 1.0f);
     float_t angle_radians = 2.0f * std::numbers::pi_v<float_t> * rng(rne);
 
     return point2d_t(point.x + radius * std::cos(angle_radians), point.y + radius * sin(angle_radians));
@@ -124,14 +122,7 @@ bool _is_valid_candidate(const point2d_t& point, const _grid_t<point2d_t>& grid)
 template<typename point2d_t, typename rn_engine_t>
     requires std::uniform_random_bit_generator<rn_engine_t>
 std::vector<point2d_t> pds_Bridson_sampling_2d(integral_t width, integral_t height, float_t min_dist, integral_t k_max_candidates,
-                                               rn_engine_t& rne,
-                                               radius_func_t radius_func = nullptr) {
-    if (!radius_func)
-        radius_func = [&rne](float_t min_dist) {
-            std::uniform_real_distribution<float_t> rng;
-            return min_dist * (rng(rne) + 1.0f);
-        };
-
+                                               rn_engine_t& rne) {
     _grid_t<point2d_t> grid(width, height, min_dist);
 
     typedef std::vector<point2d_t> points_t;
@@ -153,7 +144,7 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(integral_t width, integral_t heig
 
         bool found = false;
         for (integral_t i = 0; i < k_max_candidates; ++i) {
-            point2d_t candidate = _generate_random_point_around(point, min_dist, rne, radius_func);
+            point2d_t candidate = _generate_random_point_around(point, min_dist, rne);
             if (!_is_valid_candidate(candidate, grid))
                 continue;
 

@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 
 #include "pds_Bridson.hpp"
@@ -13,14 +14,17 @@ struct point2d {
 int main(int argc, char* argv[]) {
 	std::mt19937 rne;
 
-	auto bridsonSamples = blue_noise::pds_Bridson_sampling_2d<point2d<float>, std::mt19937>(
-            100, 100,
-            10,
+    const auto start = std::chrono::steady_clock::now();
+    auto bridsonSamples = blue_noise::pds_Bridson_sampling_2d<point2d<float>, std::mt19937>(
+            1600, 900,
+            9.6,
             30,
-            rne,
-            nullptr
+            rne
     );
-    std::cout << "generated: " << bridsonSamples.size() << std::endl;
+    const auto end = std::chrono::steady_clock::now();
+    std::cout << "generated: " << bridsonSamples.size()
+        << " in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms"
+        << std::endl;
 
 	return 0;
 }
