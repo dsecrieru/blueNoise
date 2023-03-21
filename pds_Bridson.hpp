@@ -25,7 +25,7 @@ public:
         , _cell_size(min_dist / std::numbers::sqrt2_v<float_t>)
         , _w(std::lround(float_t(_orig_w) / _cell_size))
         , _h(std::lround(float_t(_orig_h) / _cell_size))
-        , _min_dist_squared(min_dist * min_dist + FLT_EPSILON)
+        , _min_dist_squared(min_dist * min_dist + std::numeric_limits<float_t>::epsilon())
         , _points(_w * _h) {
     }
 
