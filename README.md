@@ -6,11 +6,15 @@
 A header-only, C++20 implementation of Robert Bridson's *Fast Poisson Disk Sampling* from 2007, for the 2-dimensional case.
 More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
 
+Built and tested on:
+- Windows 10, VS 2017, compiler version 19.35.32215
+- WSL Ubuntu 23.04, GCC 12.2.0
+
 ### Crude comparisons between different implementations:
 - arch: amd64
-- CPU: AMD Ryzen 9 5900X 4.2Ghz
+- CPU: AMD Ryzen 9 5900X 4.2GHz
 - RAM: 64GB
-- compiler: VS 2017, compiler version `19.35.32215`
+- compiler: VS 2017, compiler version 19.35.32215
 - compiler options:  `/Ox /std:c++20`
 - 10 samples
 
