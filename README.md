@@ -2,6 +2,8 @@
 
 ### *In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.* - Wikipedia
 
+![blue noise example](https://github.com/dsecrieru/blueNoise/blob/main/images/pdsBridson01.PNG)
+
 # Description
 
 A header-only, C++20 implementation of Robert Bridson's *Fast Poisson Disk Sampling* from 2007, for the 2-dimensional case.
