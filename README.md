@@ -11,7 +11,11 @@ Built and tested on:
 - Windows 10, VS 2017, compiler version 19.35.32215
 - WSL Ubuntu 23.04, GCC 12.2.0
 
-### Crude comparisons between different implementations:
+# License
+
+[LICENSE](./LICENSE) ([The MIT license](http://choosealicense.com/licenses/mit/))
+
+# Performance
 - arch: amd64
 - CPU: AMD Ryzen 9 5900X 4.2GHz
 - RAM: 64GB
