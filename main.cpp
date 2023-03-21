@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     const auto start = std::chrono::steady_clock::now();
     auto bridsonSamples = blue_noise::pds_Bridson_sampling_2d<point2d<float>, std::mt19937>(
             1600, 900,
-            9.6,
+            9.6f,
             30,
             rne
     );
