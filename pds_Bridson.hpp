@@ -74,9 +74,11 @@ namespace _internal {
     };
 
     template<typename T>
-    void _remove_at(std::vector<T> &vec, typename std::vector<T>::size_type pos) {
+    T _remove_at(std::vector<T> &vec, typename std::vector<T>::size_type pos) {
+        T elem = std::move_if_noexcept(vec[pos]);
         vec[pos] = std::move_if_noexcept((vec.back()));
         vec.pop_back();
+        return elem;
     }
 
     template<typename point2d_t, typename rn_engine_t>
@@ -95,7 +97,7 @@ namespace _internal {
         if (!grid.has_within(point))
             return false;
 
-        auto grid_coord = grid.cell_coord(point);
+        const auto grid_coord = grid.cell_coord(point);
 
         typedef typename _grid_t<point2d_t>::size_type size_type;
         size_type start_x = grid_coord.x >= 2 ? grid_coord.x - 2 : 0;
@@ -103,9 +105,9 @@ namespace _internal {
         size_type start_y = grid_coord.y >= 2 ? grid_coord.y - 2 : 0;
         size_type end_y = grid_coord.y <= grid.h() - 3 ? grid_coord.y + 2 : grid.h() - 1;
 
-        for (size_type i = start_x; i <= end_x; ++i)
-            for (size_type j = start_y; j <= end_y; ++j)
-                if (!grid.is_valid_candidate(i, j, point))
+        for (size_type i = start_y; i <= end_y; ++i)
+            for (size_type j = start_x; j <= end_x; ++j)
+                if (!grid.is_valid_candidate(j, i, point))
                     return false;
 
         return true;
@@ -141,10 +143,8 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(integral_t width, integral_t heig
 
     while (!active.empty()) {
         std::uniform_int_distribution<typename points_t::size_type> idx_rng(0, active.size() - 1);
-        typename points_t::size_type random_idx = idx_rng(rne);
-        const point2d_t& point = active[random_idx];
+        const point2d_t point = _internal::_remove_at(active, idx_rng(rne));
 
-        bool found = false;
         for (integral_t i = 0; i < k_max_candidates; ++i) {
             point2d_t candidate = _internal::_generate_random_point_around(point, min_dist, rne);
             if (!_is_valid_candidate(candidate, grid))
@@ -153,13 +153,6 @@ std::vector<point2d_t> pds_Bridson_sampling_2d(integral_t width, integral_t heig
             grid.add_point(candidate);
             active.push_back(candidate);
             generated.push_back(candidate);
-
-            found = true;
-            break;
-        }
-
-        if (!found) {
-            _internal::_remove_at(active, random_idx);
         }
     }
 
