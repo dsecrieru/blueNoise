@@ -6,7 +6,7 @@
 
 # Description
 
-A header-only, C++20 implementation of Robert Bridson's *Fast Poisson Disk Sampling* from 2007, for the 2-dimensional case.
+A header-only, C++20 implementation of Robert Bridson's *Fast Poisson Disk Sampling* (2007), for the 2-dimensional case.
 More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
 
 Built and tested on:
@@ -29,10 +29,10 @@ Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ impl
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | 55
-dsecrieru, vanilla Bridson w. mt19937 RNG, 1600x900, minDist=9.5 | ~9978 | 22.05
+dsecrieru, Bridson w. mt19937 RNG, 1600x900, minDist=9.5 | ~9970 | 21.23
 
 Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.3, 1600x900, k=30:
 Implementation | minDist | maxDistance | points | ms
 --- | --- | --- | --- | ---
 kchapelier | 8.00 | 16.00 | ~14313 | 62.723
-dsecrieru, vanilla Bridson w. mt19937 RNG | 7.9 | 15.8 | ~14411 | 32.21
+dsecrieru, Bridson w. mt19937 RNG | 7.9 | 15.8 | ~14404 | 31.01
