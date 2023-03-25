@@ -25,19 +25,19 @@ Built and tested on:
 - compiler options:  `/Ox /std:c++20`
 - 10 samples
 
-Comparison w. https://github.com/kchapelier/poisson-disk-sampling, JavaScript implementation, v2.2.3, 1600x900, k=30:
+Comparison w. https://github.com/kchapelier/poisson-disk-sampling/releases/tag/2.3.1, JavaScript; 1600x900, k=30:
 Implementation | minDist | maxDistance | points | ms
 --- | --- | --- | --- | ---
 kchapelier | 8.00 | 16.00 | ~14313 | 62.723
 dsecrieru, Bridson w. mt19937 RNG | 7.9 | 15.8 | ~14404 | 31.01
 
-Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++ implementation, k=30:
+Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++; k=30:
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | 55
 dsecrieru, Bridson w. mt19937 RNG, 1600x900, minDist=9.5 | ~9970 | 21.23
 
-Comparison w. https://github.com/martynafford/poisson-disc-distribution-bridson, C++ implementation; mt19937 RNG, 1600x900, minDist=9.5, k=30:
+Comparison w. https://github.com/martynafford/poisson-disc-distribution-bridson, C++; mt19937 RNG, 1600x900, minDist=9.5, k=30:
 Implementation | points | ms
 --- | --- | ---
 martynafford | ~9774 | 23.91
