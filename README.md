@@ -11,7 +11,7 @@ More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson
 
 Built and tested on:
 - Windows 10, VS 2017, compiler version 19.35.32215
-- WSL Ubuntu 23.04, GCC 12.2.0
+- WSL Ubuntu 23.04, GCC 13.0.1
 
 # License
 
