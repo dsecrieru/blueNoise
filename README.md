@@ -29,18 +29,18 @@ Comparison w. https://github.com/kchapelier/poisson-disk-sampling/releases/tag/2
 Implementation | minDist | maxDistance | points | ms
 --- | --- | --- | --- | ---
 kchapelier | 8.00 | 16.00 | ~14313 | 62.723
-dsecrieru, Bridson w. mt19937 RNG | 7.9 | 15.8 | ~14404 | 31.01
+dsecrieru, Bridson w. mt19937 RNG | 7.9 | 15.8 | ~14404 | 30
 
 Comparison w. https://github.com/corporateshark/poisson-disk-generator, C++; k=30:
 Implementation | points | ms
 --- | --- | ---
 corporateshark, all defaults | ~9826 | 55
-dsecrieru, Bridson w. mt19937 RNG, 1600x900, minDist=9.5 | ~9970 | 21.23
+dsecrieru, Bridson w. mt19937 RNG, 1600x900, minDist=9.5 | ~9970 | 21
 
 Comparison w. https://github.com/martynafford/poisson-disc-distribution-bridson, C++; mt19937 RNG, 1600x900, minDist=9.5, k=30:
 Implementation | points | ms
 --- | --- | ---
 martynafford | ~9774 | 23.91
-dsecrieru | ~9970 | 21.23
+dsecrieru | ~9970 | 21
 
-This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (local lambdas, configuration pack, using stack instead of random-picked vector).
+This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (local lambdas, configuration pack).

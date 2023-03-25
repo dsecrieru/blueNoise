@@ -3,7 +3,6 @@
 
 #include <numbers>
 #include <vector>
-#include <stack>
 #include <optional>
 #include <algorithm>
 
@@ -92,17 +91,17 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& 
         return point_t(p.x + radius * std::cos(angle_radians), p.y + radius * sin(angle_radians));
     };
 
-    std::stack<point_t> active;
+    std::vector<point_t> active;
 
     point_t first(rng(rne) * (conf.w - 1.0f), rng(rne) * (conf.h - 1.0f));
 
     set_cell(first);
-    active.push(first);
+    active.push_back(first);
     ret_points.push_back(first);
 
     while (!active.empty()) {
-        auto point = active.top();
-        active.pop();
+        auto point = active.back();
+        active.pop_back();
 
         for (integral_t i = 0; i < conf.k_max_attempts; ++i) {
             auto candidate = new_candidate_around(point);
@@ -111,7 +110,7 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& 
                 continue;
 
             set_cell(candidate);
-            active.push(candidate);
+            active.push_back(candidate);
             ret_points.push_back(candidate);
         }
     }
