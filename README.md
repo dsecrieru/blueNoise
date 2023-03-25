@@ -43,4 +43,4 @@ Implementation | points | ms
 martynafford | ~9774 | 23.91
 dsecrieru | ~9970 | 21.23
 
-This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (the local lambdas, the configuration pack, using stack instead of random-picked vector).
+This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (local lambdas, configuration pack, using stack instead of random-picked vector).

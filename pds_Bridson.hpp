@@ -7,7 +7,7 @@
 #include <optional>
 #include <algorithm>
 
-namespace blue_noise::bridson2d {
+namespace blue_noise::bridson_2d {
 
 typedef int32_t integral_t;
 typedef float float_t;
@@ -119,6 +119,6 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& 
     return ret_points;
 }
 
-} // blue_noise::bridson2d
+} // blue_noise::bridson_2d
 
 #endif
