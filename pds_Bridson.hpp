@@ -26,7 +26,10 @@ struct config {
  *
  */
 template<typename point_t, typename rng_t>
-    requires std::uniform_random_bit_generator<rng_t>
+    requires requires (point_t p) {
+        requires std::is_floating_point<decltype(p.x)>::value;
+        requires std::is_floating_point<decltype(p.y)>::value;
+    } && std::uniform_random_bit_generator<rng_t>
 std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
     const auto cell_size = conf.min_dist / std::numbers::sqrt2_v<float_t>;
     const auto grid_w = static_cast<integral_t>(std::ceil(conf.w / cell_size));

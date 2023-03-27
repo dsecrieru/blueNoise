@@ -8,6 +8,9 @@
 
 A header-only, C++20 implementation of Robert Bridson's *Fast Poisson Disk Sampling* (2007), for the 2-dimensional case.
 More details in the original paper: https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
+What I wanted, that is a bit different from other implementations that I've seen, is the possibility to parametrize the point type.
+
+In the future, I might add more implementations.
 
 Built and tested on:
 - Windows 10, VS 2017, compiler version 19.35.32215
@@ -43,4 +46,4 @@ Implementation | points | ms
 martynafford | ~9774 | 23.91
 dsecrieru | ~9970 | 21
 
-This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (local lambdas, configuration pack).
+This is a good one, very similar in performance, with some interesting ideas that inspired me to incorporate (local lambdas, configuration pack, random picking from active list might not be necessary).

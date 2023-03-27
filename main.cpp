@@ -7,7 +7,7 @@
 #include "pds_Bridson.hpp"
 
 struct point2d {
-	float x, y;
+    float x, y;
 
 	point2d() = delete;
 	point2d(float x_, float y_) : x(x_), y(y_) {}
@@ -34,7 +34,7 @@ void bench(const blue_noise::bridson_2d::config& conf) {
     const auto avg_count = std::reduce(sample_counts.begin(), sample_counts.end()) / float(runs);
     const auto avg_duration = std::reduce(durations.begin(), durations.end()) / float(runs);
 
-    std::cout << std::format("generated avg of {:6.0f} points in ~{:3}\n", avg_count, avg_duration);
+    std::cout << std::format("generated approx {:6.0f} points in ~{:3}\n", avg_count, avg_duration);
 }
 
 int main() {
