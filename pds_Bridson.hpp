@@ -25,9 +25,9 @@ struct config {
  *     https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
  *
  */
-template<typename point_t, typename random_engine_t>
-    requires std::uniform_random_bit_generator<random_engine_t>
-std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& rne) {
+template<typename point_t, typename rng_t>
+    requires std::uniform_random_bit_generator<rng_t>
+std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
     const auto cell_size = conf.min_dist / std::numbers::sqrt2_v<float_t>;
     const auto grid_w = static_cast<integral_t>(std::ceil(conf.w / cell_size));
     const auto grid_h = static_cast<integral_t>(std::ceil(conf.h / cell_size));
@@ -44,7 +44,7 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& 
     auto grid_y = [=](const point_t& p) {
         return std::min(static_cast<integral_t>(p.y / cell_size), grid_h - 1);
     };
-    auto set_cell = [cell_size, grid_w, &grid, &grid_x, &grid_y](const point_t& p) {
+    auto set_cell = [grid_w, &grid, &grid_x, &grid_y](const point_t& p) {
         grid[grid_y(p) * grid_w + grid_x(p)] = p;
     };
     const auto& get_cell = [grid_w, &grid](integral_t x, integral_t y) {
@@ -82,18 +82,18 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, random_engine_t& 
         return true;
     };
 
-    std::uniform_real_distribution<float> rng;
+    std::uniform_real_distribution<float> distrib;
 
     auto new_candidate_around = [&](const point_t& p) {
-        auto radius = conf.min_dist * (rng(rne) + 1.0f);
-        auto angle_radians = 2.0f * std::numbers::pi_v<float_t> * rng(rne);
+        auto radius = conf.min_dist * (distrib(rng) + 1.0f);
+        auto angle_radians = 2.0f * std::numbers::pi_v<float_t> * distrib(rng);
 
         return point_t(p.x + radius * std::cos(angle_radians), p.y + radius * sin(angle_radians));
     };
 
     std::vector<point_t> active;
 
-    point_t first(rng(rne) * (conf.w - 1.0f), rng(rne) * (conf.h - 1.0f));
+    point_t first(distrib(rng) * (conf.w - 1.0f), distrib(rng) * (conf.h - 1.0f));
 
     set_cell(first);
     active.push_back(first);
