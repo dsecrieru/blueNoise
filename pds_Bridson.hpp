@@ -7,13 +7,15 @@
 #include <algorithm>
 #include <variant>
 
+#include "coro_generator.hpp"
+
 namespace blue_noise::bridson_2d {
 
 typedef int32_t integral_t;
 typedef float float_t;
 
 #ifdef BN_PDS_GENERATOR
-    enum class event_t {
+    enum class event_type {
         sample_generated
     };
 #endif
@@ -23,7 +25,12 @@ template<typename point_t>
 #endif
 struct config {
 #ifdef BN_PDS_GENERATOR
-    typedef std::variant<point_t> event_data_t;
+    typedef std::variant<point_t> event_data;
+
+    struct event_t {
+        event_type type;
+        event_data data;
+    };
 #endif
 
     float_t w = 1.0f;
@@ -40,8 +47,10 @@ struct config {
  *
  */
 #ifdef BN_PDS_GENERATOR
-template<typename point_t, typename rng_t, typename callback_t>
-void poisson_disc_sampling(const config<point_t>& conf, rng_t& rng, callback_t&& yield) {
+template<typename point_t, typename rng_t>
+coro::generator_t<typename config<point_t>::event_t> poisson_disc_sampling(const config<point_t>& conf, rng_t& rng) {
+    typedef typename config<point_t>::event_t event_t;
+
 #else
 template<typename point_t, typename rng_t>
 requires requires (point_t p) {
@@ -122,7 +131,7 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
     set_cell(first);
     active.push_back(first);
 #ifdef BN_PDS_GENERATOR
-    yield(event_t::sample_generated, first);
+    co_yield event_t(event_type::sample_generated, first);
 #else
     ret_points.push_back(first);
 #endif
@@ -140,7 +149,7 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
             set_cell(candidate);
             active.push_back(candidate);
 #ifdef BN_PDS_GENERATOR
-            yield(event_t::sample_generated, candidate);
+            co_yield event_t(event_type::sample_generated, candidate);
 #else
             ret_points.push_back(candidate);
 #endif
