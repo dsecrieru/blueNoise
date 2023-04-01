@@ -13,10 +13,12 @@ struct point2d {
 	point2d(float x_, float y_) : x(x_), y(y_) {}
 };
 
+typedef blue_noise::bridson_2d::config config_t;
+
 const int runs = 10;
 std::random_device rd;
 
-void bench(const blue_noise::bridson_2d::config& conf) {
+void bench(const config_t& conf) {
     std::vector<std::size_t> sample_counts;
     std::vector<std::chrono::milliseconds> durations;
 
@@ -38,7 +40,7 @@ void bench(const blue_noise::bridson_2d::config& conf) {
 }
 
 int main() {
-    blue_noise::bridson_2d::config conf1k = {
+    config_t conf1k = {
             .w = 1600,
             .h = 900,
             .min_dist = 30.1f,
@@ -46,7 +48,7 @@ int main() {
     };
     bench(conf1k);
 
-    blue_noise::bridson_2d::config conf10k = {
+    config_t conf10k = {
         .w = 1600,
         .h = 900,
         .min_dist = 9.48f,
@@ -54,7 +56,7 @@ int main() {
     };
     bench(conf10k);
 
-    blue_noise::bridson_2d::config conf100k = {
+    config_t conf100k = {
             .w = 1600,
             .h = 900,
             .min_dist = 2.99f,
