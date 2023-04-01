@@ -5,13 +5,27 @@
 #include <vector>
 #include <optional>
 #include <algorithm>
+#include <variant>
 
 namespace blue_noise::bridson_2d {
 
 typedef int32_t integral_t;
 typedef float float_t;
 
+#ifdef BN_PDS_GENERATOR
+    enum class event_t {
+        sample_generated
+    };
+#endif
+
+#ifdef BN_PDS_GENERATOR
+template<typename point_t>
+#endif
 struct config {
+#ifdef BN_PDS_GENERATOR
+    typedef std::variant<point_t> event_data_t;
+#endif
+
     float_t w = 1.0f;
     float_t h = 1.0f;
     float_t min_dist = 0.01f;
@@ -25,19 +39,26 @@ struct config {
  *     https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
  *
  */
+#ifdef BN_PDS_GENERATOR
+template<typename point_t, typename rng_t, typename callback_t>
+void poisson_disc_sampling(const config<point_t>& conf, rng_t& rng, callback_t&& yield) {
+#else
 template<typename point_t, typename rng_t>
-    requires requires (point_t p) {
-        requires std::is_floating_point<decltype(p.x)>::value;
-        requires std::is_floating_point<decltype(p.y)>::value;
-    } && std::uniform_random_bit_generator<rng_t>
+requires requires (point_t p) {
+    requires std::is_floating_point<decltype(p.x)>::value;
+    requires std::is_floating_point<decltype(p.y)>::value;
+} && std::uniform_random_bit_generator<rng_t>
 std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
+#endif
     const auto cell_size = conf.min_dist / std::numbers::sqrt2_v<float_t>;
     const auto grid_w = static_cast<integral_t>(std::ceil(conf.w / cell_size));
     const auto grid_h = static_cast<integral_t>(std::ceil(conf.h / cell_size));
     const auto min_dist_sq = conf.min_dist * conf.min_dist - std::numeric_limits<float_t>::epsilon();
 
+#ifndef BN_PDS_GENERATOR
     std::vector<point_t> ret_points;
     ret_points.reserve(grid_w * grid_h);
+#endif
 
     std::vector<std::optional<point_t>> grid(grid_w * grid_h);
 
@@ -100,7 +121,11 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
 
     set_cell(first);
     active.push_back(first);
+#ifdef BN_PDS_GENERATOR
+    yield(event_t::sample_generated, first);
+#else
     ret_points.push_back(first);
+#endif
 
     while (!active.empty()) {
         auto point = active.back();
@@ -114,11 +139,17 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
 
             set_cell(candidate);
             active.push_back(candidate);
+#ifdef BN_PDS_GENERATOR
+            yield(event_t::sample_generated, candidate);
+#else
             ret_points.push_back(candidate);
+#endif
         }
     }
 
+#ifndef BN_PDS_GENERATOR
     return ret_points;
+#endif
 }
 
 } // blue_noise::bridson_2d
