@@ -7,32 +7,31 @@
 #include <algorithm>
 #include <variant>
 
+#ifdef BN_PDS_DEBUG
 #include "coro_generator.hpp"
+#endif
 
 namespace blue_noise::bridson_2d {
 
 typedef int32_t integral_t;
 typedef float float_t;
 
-#ifdef BN_PDS_GENERATOR
+#ifdef BN_PDS_DEBUG
     enum class event_type {
-        sample_generated
+        sample,
+        candidate,
+        reject,
+        iteration
     };
-#endif
 
-#ifdef BN_PDS_GENERATOR
-template<typename point_t>
-#endif
-struct config {
-#ifdef BN_PDS_GENERATOR
-    typedef std::variant<point_t> event_data;
-
+    template<typename point_t>
     struct event_t {
         event_type type;
-        event_data data;
+        std::variant<point_t, std::size_t> data;
     };
 #endif
 
+    struct config {
     float_t w = 1.0f;
     float_t h = 1.0f;
     float_t min_dist = 0.01f;
@@ -46,11 +45,10 @@ struct config {
  *     https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
  *
  */
-#ifdef BN_PDS_GENERATOR
+#ifdef BN_PDS_DEBUG
 template<typename point_t, typename rng_t>
-coro::generator_t<typename config<point_t>::event_t> poisson_disc_sampling(const config<point_t>& conf, rng_t& rng) {
-    typedef typename config<point_t>::event_t event_t;
-
+auto poisson_disc_sampling(const config& conf, rng_t& rng) -> coro::generator_t<event_t<point_t>> {
+    typedef event_t<point_t> event_t;
 #else
 template<typename point_t, typename rng_t>
 requires requires (point_t p) {
@@ -64,7 +62,7 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
     const auto grid_h = static_cast<integral_t>(std::ceil(conf.h / cell_size));
     const auto min_dist_sq = conf.min_dist * conf.min_dist - std::numeric_limits<float_t>::epsilon();
 
-#ifndef BN_PDS_GENERATOR
+#ifndef BN_PDS_DEBUG
     std::vector<point_t> ret_points;
     ret_points.reserve(grid_w * grid_h);
 #endif
@@ -130,8 +128,8 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
 
     set_cell(first);
     active.push_back(first);
-#ifdef BN_PDS_GENERATOR
-    co_yield event_t(event_type::sample_generated, first);
+#ifdef BN_PDS_DEBUG
+    co_yield event_t(event_type::sample, first);
 #else
     ret_points.push_back(first);
 #endif
@@ -140,23 +138,38 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
         auto point = active.back();
         active.pop_back();
 
+#ifdef BN_PDS_DEBUG
+        std::size_t good_candidates = 0;
+#endif
         for (integral_t i = 0; i < conf.k_max_attempts; ++i) {
             auto candidate = new_candidate_around(point);
+#ifdef BN_PDS_DEBUG
+            co_yield event_t(event_type::candidate, candidate);
+#endif
 
-            if (!is_valid(candidate))
+            if (!is_valid(candidate)) {
+#ifdef BN_PDS_DEBUG
+                co_yield event_t(event_type::reject, candidate);
+#endif
                 continue;
+            }
 
             set_cell(candidate);
             active.push_back(candidate);
-#ifdef BN_PDS_GENERATOR
-            co_yield event_t(event_type::sample_generated, candidate);
+#ifdef BN_PDS_DEBUG
+            co_yield event_t(event_type::sample, candidate);
+            ++good_candidates;
 #else
             ret_points.push_back(candidate);
 #endif
         }
+
+#ifdef BN_PDS_DEBUG
+        co_yield event_t(event_type::iteration, good_candidates);
+#endif
     }
 
-#ifndef BN_PDS_GENERATOR
+#ifndef BN_PDS_DEBUG
     return ret_points;
 #endif
 }
