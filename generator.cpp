@@ -7,7 +7,7 @@
 #include <iostream>
 #include <numeric>
 
-#define BN_PDS_GENERATOR
+#define BN_PDS_DEBUG
 #include "pds_Bridson.hpp"
 
 struct point2d {
@@ -17,7 +17,7 @@ struct point2d {
     point2d(float x_, float y_) : x(x_), y(y_) {}
 };
 
-typedef blue_noise::bridson_2d::config<point2d> config_t;
+typedef blue_noise::bridson_2d::config config_t;
 using blue_noise::bridson_2d::event_type;
 
 const int runs = 10;
@@ -36,11 +36,11 @@ void bench(const config_t& conf, int expected) {
         std::mt19937 rng(rd());
 
         const auto start = std::chrono::steady_clock::now();
-        auto pds_gen = blue_noise::bridson_2d::poisson_disc_sampling(conf, rng);
+        auto pds_gen = blue_noise::bridson_2d::poisson_disc_sampling<point2d>(conf, rng);
         while(pds_gen) {
             const auto& event = pds_gen();
             switch (event.type) {
-                case event_type::sample_generated:
+                case event_type::sample:
                     samples.push_back(std::get<point2d>(event.data));
                     break;
                 default:
