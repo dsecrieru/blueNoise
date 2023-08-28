@@ -1,4 +1,4 @@
-# blueNoise
+# blueNoise [![License](https://img.shields.io/github/license/dsecrieru/blueNoise.svg)](https://github.com/dsecrieru/blueNoise/blob/master/LICENSE)
 
 *In computer graphics, the term "blue noise" is sometimes used more loosely as any noise with minimal low frequency components and no concentrated spikes in energy.* - Wikipedia
 
@@ -15,10 +15,6 @@ In the future, I might add more implementations.
 Built and tested on:
 - Windows 10, VS 2017, compiler version 19.35.32215
 - WSL Ubuntu 23.04, GCC 13.0.1
-
-# License
-
-[LICENSE](./LICENSE) ([The MIT license](http://choosealicense.com/licenses/mit/))
 
 # Performance
 - arch: amd64
