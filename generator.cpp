@@ -14,7 +14,7 @@ struct point2d {
     float x, y;
 
     point2d() = default;
-    point2d(float x_, float y_) : x(x_), y(y_) {}
+    point2d(float x, float y) : x(x), y(y) {}
 };
 
 typedef blue_noise::bridson_2d::config config_t;

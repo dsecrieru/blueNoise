@@ -36,7 +36,7 @@ namespace coro {
 
         handle_type h_;
 
-        generator_t(handle_type h) : h_(h) {}
+        explicit generator_t(handle_type h) : h_(h) {}
         ~generator_t() { h_.destroy(); }
 
         explicit operator bool() {

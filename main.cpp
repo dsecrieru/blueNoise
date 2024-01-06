@@ -6,11 +6,13 @@
 
 #include "pds_Bridson.hpp"
 
+typedef float scalar_t;
+
 struct point2d {
-    float x, y;
+    scalar_t x, y;
 
 	point2d() = delete;
-	point2d(float x_, float y_) : x(x_), y(y_) {}
+	point2d(scalar_t x, scalar_t y) : x(x), y(y) {}
 };
 
 typedef blue_noise::bridson_2d::config config_t;
@@ -33,8 +35,8 @@ void bench(const config_t& conf) {
         durations.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(end - start));
     }
 
-    const auto avg_count = std::reduce(sample_counts.begin(), sample_counts.end()) / float(runs);
-    const auto avg_duration = std::reduce(durations.begin(), durations.end()) / float(runs);
+    auto avg_count = std::reduce(sample_counts.begin(), sample_counts.end()) / float(runs);
+    auto avg_duration = std::reduce(durations.begin(), durations.end()) / float(runs);
 
     std::cout << std::format("generated approx {:6.0f} points in ~{:3}\n", avg_count, avg_duration);
 }
