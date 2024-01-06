@@ -3,6 +3,7 @@
 
 #include <numbers>
 #include <vector>
+#include <random>
 #include <optional>
 #include <algorithm>
 
@@ -88,10 +89,10 @@ std::vector<point_t> poisson_disc_sampling(const config& conf, rng_t& rng) {
     std::uniform_real_distribution<float> distrib;
 
     auto new_candidate_around = [&](const point_t& p) {
-        auto radius = conf.min_dist * (distrib(rng) + 1.0f);
+        auto radius = conf.min_dist * std::sqrtf(distrib(rng) * 3.0f + 1.0f);
         auto angle_radians = 2.0f * std::numbers::pi_v<float_t> * distrib(rng);
 
-        return point_t(p.x + radius * std::cos(angle_radians), p.y + radius * sin(angle_radians));
+        return point_t(p.x + radius * std::cos(angle_radians), p.y + radius * std::sin(angle_radians));
     };
 
     std::vector<point_t> active;
